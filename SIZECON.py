@@ -1,2 +1,2 @@
 r=input
-print(sum(i*(i>0)for i in map(int,(r() for _ in range(r())))))
+print(sum(i for i in map(int,(r() for _ in "1"*r())) if i > 0))
