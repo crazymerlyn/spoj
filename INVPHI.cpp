@@ -10,17 +10,37 @@ bool isprime(long long n) {
     return true;
 }
 
-vector<long long> divs(long long n) {
+vector<long long> products(vector<pair<long long, int>> facs, size_t i) {
     vector<long long> res;
-    long long i = 0;
-    for (i = 1; i * i < n; ++i) {
-        if (n % i == 0) {
-            res.push_back(i);
-            res.push_back(n / i);
+    res.push_back(1);
+    for (auto t : facs) {
+        int val = 1;
+        vector<long long> newres(res.begin(), res.end());
+        for (int i = 1; i <= t.second; ++i) {
+            val *= t.first;
+            for (auto old : res) newres.push_back(old * val);
         }
+        res = newres;
     }
-    if (i * i == n) res.push_back(i);
     return res;
+}
+
+vector<long long> divs(long long n) {
+    vector<pair<long long, int>> res;
+    long long i = 2;
+    while (i * i <= n) {
+        if (n % i == 0) {
+            int count = 0;
+            while (n % i == 0) {
+                count += 1;
+                n /= i;
+            }
+            res.push_back({i, count});
+        }
+        i += 1;
+    }
+    if (n > 1) res.push_back({n,1});
+    return products(res, 0);
 }
 
 vector<long long> prime_possibs(long long n) {
@@ -65,9 +85,7 @@ int main() {
         if (res.size() == 0) {
             cout << -1 << endl;
         } else {
-            long long ans = res[0];
-            for (auto p: res) ans = min(ans, p);
-            cout << ans << endl;
+            cout << *min_element(res.begin(), res.end()) << endl;
         }
     }
     return 0;
